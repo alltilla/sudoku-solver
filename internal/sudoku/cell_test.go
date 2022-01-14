@@ -151,3 +151,78 @@ func TestRemovePencilMarkInvalid(t *testing.T) {
 		})
 	}
 }
+
+func TestAddPencilMarks(t *testing.T) {
+	cell := NewCell()
+	emptyPencilMarks(cell)
+
+	pencil_marks_to_add := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+	AssertNoError(t, cell.AddPencilMarks(pencil_marks_to_add))
+	assertPencilMarks(t, cell.GetPencilMarks(), pencil_marks_to_add)
+}
+
+func TestAddPencilMarksIdempotency(t *testing.T) {
+	cell := NewCell()
+	emptyPencilMarks(cell)
+
+	pencil_marks_to_add := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+	AssertNoError(t, cell.AddPencilMarks(pencil_marks_to_add))
+	AssertNoError(t, cell.AddPencilMarks(pencil_marks_to_add))
+	assertPencilMarks(t, cell.GetPencilMarks(), pencil_marks_to_add)
+}
+
+func TestAddPencilMarksInvalid(t *testing.T) {
+	pencil_mark_arrays_to_add := [][]int{
+		{1, 0},
+		{1, 10},
+	}
+
+	for _, pencil_marks_to_add := range pencil_mark_arrays_to_add {
+		t.Run(strconv.Itoa(pencil_marks_to_add[1]), func(t *testing.T) {
+			cell := NewCell()
+			emptyPencilMarks(cell)
+
+			AssertError(t, cell.AddPencilMarks(pencil_marks_to_add))
+			assertPencilMarks(t, cell.GetPencilMarks(), []int{})
+		})
+	}
+}
+
+func TestRemovePencilMarks(t *testing.T) {
+	cell := NewCell()
+
+	pencil_marks_to_remove := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+	AssertNoError(t, cell.RemovePencilMarks(pencil_marks_to_remove))
+	assertPencilMarks(t, cell.GetPencilMarks(), []int{})
+}
+
+func TestRemovePencilMarksIdempotency(t *testing.T) {
+	cell := NewCell()
+
+	pencil_marks_to_remove := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+	AssertNoError(t, cell.RemovePencilMarks(pencil_marks_to_remove))
+	AssertNoError(t, cell.RemovePencilMarks(pencil_marks_to_remove))
+	assertPencilMarks(t, cell.GetPencilMarks(), []int{})
+}
+
+func TestRemovePencilMarksInvalid(t *testing.T) {
+	pencil_mark_arrays_to_remove := [][]int{
+		{1, 0},
+		{1, 10},
+	}
+
+	for _, pencil_marks_to_remove := range pencil_mark_arrays_to_remove {
+		t.Run(strconv.Itoa(pencil_marks_to_remove[1]), func(t *testing.T) {
+			cell := NewCell()
+
+			expected_pencil_marks := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+			AssertError(t, cell.RemovePencilMarks(pencil_marks_to_remove))
+			assertPencilMarks(t, cell.GetPencilMarks(), expected_pencil_marks)
+		})
+	}
+}

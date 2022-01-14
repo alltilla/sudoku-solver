@@ -76,3 +76,26 @@ func (c *Cell) AddPencilMark(pencil_mark int) error {
 func (c *Cell) RemovePencilMark(pencil_mark int) error {
 	return c.changePencilMark(pencil_mark, false)
 }
+
+func (c *Cell) changePencilMarks(pencil_marks []int, set bool) error {
+	for _, pencil_mark := range pencil_marks {
+		err := checkDigitValidity(pencil_mark)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, pencil_mark := range pencil_marks {
+		c.pencil_marks[pencil_mark-1] = set
+	}
+
+	return nil
+}
+
+func (c *Cell) AddPencilMarks(pencil_marks []int) error {
+	return c.changePencilMarks(pencil_marks, true)
+}
+
+func (c *Cell) RemovePencilMarks(pencil_marks []int) error {
+	return c.changePencilMarks(pencil_marks, false)
+}
