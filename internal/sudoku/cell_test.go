@@ -1,6 +1,7 @@
 package sudoku
 
 import (
+	"reflect"
 	"strconv"
 	"testing"
 
@@ -10,6 +11,12 @@ import (
 func assertValue(t *testing.T, actual int, expected int) {
 	if expected != actual {
 		t.Errorf("unexpected value. expected: %d, actual: %d", expected, actual)
+	}
+}
+
+func assertPencilMarks(t *testing.T, actual []int, expected []int) {
+	if !reflect.DeepEqual(expected, actual) {
+		t.Errorf("unexpected pencil_marks. expected: %v, actual: %v", expected, actual)
 	}
 }
 
@@ -56,4 +63,10 @@ func TestSetValueInvalid(t *testing.T) {
 			assertValue(t, cell.GetValue(), Empty)
 		})
 	}
+}
+
+func TestGetPencilMarksDefault(t *testing.T) {
+	cell := NewCell()
+
+	assertPencilMarks(t, cell.GetPencilMarks(), []int{1, 2, 3, 4, 5, 6, 7, 8, 9})
 }
