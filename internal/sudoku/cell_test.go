@@ -8,7 +8,7 @@ import (
 	. "github.com/alltilla/sudoku-solver/internal/test_utils"
 )
 
-func assertValue(t *testing.T, actual int, expected int) {
+func AssertValue(t *testing.T, actual int, expected int) {
 	if expected != actual {
 		t.Errorf("unexpected value. expected: %d, actual: %d", expected, actual)
 	}
@@ -23,7 +23,7 @@ func assertPencilMarks(t *testing.T, actual []int, expected []int) {
 func TestGetValueDefault(t *testing.T) {
 	cell := NewCell()
 
-	assertValue(t, cell.GetValue(), Empty)
+	AssertValue(t, cell.GetValue(), Empty)
 }
 
 func TestSetValue(t *testing.T) {
@@ -32,7 +32,7 @@ func TestSetValue(t *testing.T) {
 			cell := NewCell()
 
 			AssertNoError(t, cell.SetValue(value_to_set))
-			assertValue(t, cell.GetValue(), value_to_set)
+			AssertValue(t, cell.GetValue(), value_to_set)
 		})
 	}
 }
@@ -42,7 +42,7 @@ func TestSetValueEmpty(t *testing.T) {
 
 	AssertNoError(t, cell.SetValue(1))
 	AssertNoError(t, cell.SetValue(Empty))
-	assertValue(t, cell.GetValue(), Empty)
+	AssertValue(t, cell.GetValue(), Empty)
 }
 
 func TestSetValueIdempotency(t *testing.T) {
@@ -50,7 +50,7 @@ func TestSetValueIdempotency(t *testing.T) {
 
 	AssertNoError(t, cell.SetValue(1))
 	AssertNoError(t, cell.SetValue(1))
-	assertValue(t, cell.GetValue(), 1)
+	AssertValue(t, cell.GetValue(), 1)
 }
 
 func TestSetValueInvalid(t *testing.T) {
@@ -60,7 +60,7 @@ func TestSetValueInvalid(t *testing.T) {
 			cell := NewCell()
 
 			AssertError(t, cell.SetValue(value_to_set))
-			assertValue(t, cell.GetValue(), Empty)
+			AssertValue(t, cell.GetValue(), Empty)
 		})
 	}
 }
