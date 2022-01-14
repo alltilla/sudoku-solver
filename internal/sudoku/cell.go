@@ -58,3 +58,21 @@ func (c *Cell) GetPencilMarks() []int {
 
 	return pencil_marks
 }
+
+func (c *Cell) changePencilMark(pencil_mark int, set bool) error {
+	err := checkDigitValidity(pencil_mark)
+	if err != nil {
+		return err
+	}
+
+	c.pencil_marks[pencil_mark-1] = set
+	return nil
+}
+
+func (c *Cell) AddPencilMark(pencil_mark int) error {
+	return c.changePencilMark(pencil_mark, true)
+}
+
+func (c *Cell) RemovePencilMark(pencil_mark int) error {
+	return c.changePencilMark(pencil_mark, false)
+}
