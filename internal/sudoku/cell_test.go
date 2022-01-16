@@ -1,6 +1,7 @@
 package sudoku
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 	"testing"
@@ -28,6 +29,29 @@ func TestGetValueDefault(t *testing.T) {
 
 	AssertNoError(t, err)
 	AssertValue(t, cell.GetValue(), Empty)
+}
+
+func TestNewCellInvalidRowOrColumn(t *testing.T) {
+	invalid_row_and_column_ids := [][2]int{
+		{0, 1},
+		{1, 0},
+		{10, 1},
+		{1, 10},
+	}
+
+	for _, invalid_row_and_column := range invalid_row_and_column_ids {
+		row := invalid_row_and_column[0]
+		column := invalid_row_and_column[1]
+
+		t.Run(fmt.Sprintf("%d,%d", row, column), func(t *testing.T) {
+			cell, err := NewCell(row, column)
+
+			AssertError(t, err)
+			if cell != nil {
+				t.Errorf("unexpected cell")
+			}
+		})
+	}
 }
 
 func TestSetValue(t *testing.T) {
