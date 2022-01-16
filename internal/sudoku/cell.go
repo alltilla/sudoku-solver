@@ -9,6 +9,23 @@ type Cell struct {
 	pencil_marks [9]bool
 }
 
+func CheckRowAndColumnValidity(row int, column int) error {
+	if row > 9 {
+		return fmt.Errorf("row is larger than 9: %d", row)
+	}
+	if row < 1 {
+		return fmt.Errorf("row is smaller than 1: %d", row)
+	}
+	if column > 9 {
+		return fmt.Errorf("column is larger than 9: %d", column)
+	}
+	if column < 1 {
+		return fmt.Errorf("column is smaller than 1: %d", column)
+	}
+
+	return nil
+}
+
 func NewCell() *Cell {
 	value := Empty
 	pencil_marks := [9]bool{true, true, true, true, true, true, true, true, true}
