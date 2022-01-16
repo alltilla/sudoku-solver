@@ -356,3 +356,40 @@ func TestRemovePencilMarksInvalid(t *testing.T) {
 		})
 	}
 }
+
+func TestLoadValueFromString(t *testing.T) {
+	for value := 1; value <= 9; value++ {
+		t.Run(strconv.Itoa(value), func(t *testing.T) {
+			cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
+
+			AssertNoError(t, cell.LoadValueFromString(strconv.Itoa(value)))
+			AssertValue(t, cell.GetValue(), value)
+		})
+	}
+}
+
+func TestLoadValueFromStringEmpty(t *testing.T) {
+	cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
+
+	AssertNoError(t, cell.LoadValueFromString(" "))
+	AssertValue(t, cell.GetValue(), Empty)
+}
+
+func TestLoadValueFromStringInvalid(t *testing.T) {
+	invalid_strings := []string{
+		"0",
+		"10",
+		"\n",
+		"",
+		"x",
+	}
+
+	for _, str := range invalid_strings {
+		t.Run(str, func(t *testing.T) {
+			cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
+
+			AssertError(t, cell.LoadValueFromString(str))
+			AssertValue(t, cell.GetValue(), Empty)
+		})
+	}
+}

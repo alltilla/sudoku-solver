@@ -3,6 +3,7 @@ package sudoku
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 )
 
 const Empty int = -127
@@ -180,4 +181,30 @@ func (c *Cell) AddPencilMarks(pencil_marks []int) error {
 
 func (c *Cell) RemovePencilMarks(pencil_marks []int) error {
 	return c.changePencilMarks(pencil_marks, false)
+}
+
+func parseValueFromChar(char byte) (int, error) {
+	if char == ' ' {
+		return Empty, nil
+	} else {
+		return strconv.Atoi(string(char))
+	}
+}
+
+func (c *Cell) LoadValueFromString(str string) error {
+	if len(str) != 1 {
+		return fmt.Errorf("str with invalid length.: %s", str)
+	}
+
+	value, err := parseValueFromChar(str[0])
+	if err != nil {
+		return err
+	}
+
+	err = c.SetValue(value)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

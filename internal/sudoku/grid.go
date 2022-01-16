@@ -3,7 +3,6 @@ package sudoku
 import (
 	"fmt"
 	"math"
-	"strconv"
 )
 
 type Grid struct {
@@ -83,22 +82,14 @@ func (g *Grid) GetCellsInBox(box int) ([9]*Cell, error) {
 	return cells, nil
 }
 
-func parseValueFromChar(char byte) (int, error) {
-	if char == ' ' {
-		return Empty, nil
-	} else {
-		return strconv.Atoi(string(char))
-	}
-}
-
 func (g *Grid) LoadValuesFromString(str string) error {
 	for i := 0; i < 9*(9+1); i++ {
 		row := int(math.Floor(float64(i)/10) + 1)
 		column := (i % 10) + 1
-		char := str[i]
+		cell_value_str := string(str[i])
 
 		if column == 10 {
-			if char != '\n' {
+			if cell_value_str != "\n" {
 				return fmt.Errorf("missing NL at position %d", i)
 			}
 			continue
@@ -109,12 +100,7 @@ func (g *Grid) LoadValuesFromString(str string) error {
 			return err
 		}
 
-		value, err := parseValueFromChar(char)
-		if err != nil {
-			return err
-		}
-
-		err = cell.SetValue(value)
+		err = cell.LoadValueFromString(cell_value_str)
 		if err != nil {
 			return err
 		}
