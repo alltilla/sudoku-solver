@@ -2,6 +2,7 @@ package sudoku
 
 import (
 	"fmt"
+	"strconv"
 	"testing"
 
 	. "github.com/alltilla/sudoku-solver/internal/test_utils"
@@ -82,5 +83,91 @@ func TestLoadValuesFromString(t *testing.T) {
 		cell, err := grid.GetCell(expected_cell.row, expected_cell.column)
 		AssertNoError(t, err)
 		AssertValue(t, cell.GetValue(), expected_cell.value)
+	}
+}
+
+func TestGetCellsInRow(t *testing.T) {
+	grid_string := `   26 7 1
+68  7  9 
+19   45  
+82 1   4 
+  46 29  
+ 5   3 28
+  93   74
+ 4  5  36
+7 3 18   
+`
+
+	grid := NewGrid()
+	err := grid.LoadValuesFromString(grid_string)
+	AssertNoError(t, err)
+
+	row, err := grid.GetCellsInRow(5)
+	AssertNoError(t, err)
+
+	expected_values := [9]int{Empty, Empty, 4, 6, Empty, 2, 9, Empty, Empty}
+	for i, cell := range row {
+		AssertValue(t, cell.GetValue(), expected_values[i])
+	}
+}
+
+func TestGetCellsInRowInvalid(t *testing.T) {
+	rows_to_get := []int{0, 10}
+	for _, row_to_get := range rows_to_get {
+		t.Run(strconv.Itoa(row_to_get), func(t *testing.T) {
+			grid := NewGrid()
+
+			row, err := grid.GetCellsInRow(row_to_get)
+			AssertError(t, err)
+
+			for _, cell := range row {
+				if cell != nil {
+					t.Errorf("unexpected row: %v", row)
+				}
+			}
+		})
+	}
+}
+
+func TestGetCellsInColumn(t *testing.T) {
+	grid_string := `   26 7 1
+68  7  9 
+19   45  
+82 1   4 
+  46 29  
+ 5   3 28
+  93   74
+ 4  5  36
+7 3 18   
+`
+
+	grid := NewGrid()
+	err := grid.LoadValuesFromString(grid_string)
+	AssertNoError(t, err)
+
+	column, err := grid.GetCellsInColumn(5)
+	AssertNoError(t, err)
+
+	expected_values := [9]int{6, 7, Empty, Empty, Empty, Empty, Empty, 5, 1}
+	for i, cell := range column {
+		AssertValue(t, cell.GetValue(), expected_values[i])
+	}
+}
+
+func TestGetColumnInvalid(t *testing.T) {
+	columns_to_get := []int{0, 10}
+	for _, column_to_get := range columns_to_get {
+		t.Run(strconv.Itoa(column_to_get), func(t *testing.T) {
+			grid := NewGrid()
+
+			column, err := grid.GetCellsInColumn(column_to_get)
+			AssertError(t, err)
+
+			for _, cell := range column {
+				if cell != nil {
+					t.Errorf("unexpected column: %v", column)
+				}
+			}
+		})
 	}
 }

@@ -47,6 +47,36 @@ func (g *Grid) GetCell(row int, column int) (*Cell, error) {
 	return g.cells[row-1][column-1], nil
 }
 
+func (g *Grid) GetCellsInRow(row int) ([9]*Cell, error) {
+	cells := [9]*Cell{nil, nil, nil, nil, nil, nil, nil, nil, nil}
+
+	for column := 1; column <= 9; column++ {
+		cell, err := g.GetCell(row, column)
+		if err != nil {
+			return cells, err
+		}
+
+		cells[column-1] = cell
+	}
+
+	return cells, nil
+}
+
+func (g *Grid) GetCellsInColumn(column int) ([9]*Cell, error) {
+	cells := [9]*Cell{nil, nil, nil, nil, nil, nil, nil, nil, nil}
+
+	for row := 1; row <= 9; row++ {
+		cell, err := g.GetCell(row, column)
+		if err != nil {
+			return cells, err
+		}
+
+		cells[row-1] = cell
+	}
+
+	return cells, nil
+}
+
 func parseValueFromChar(char byte) (int, error) {
 	if char == ' ' {
 		return Empty, nil
