@@ -13,9 +13,15 @@ type Grid struct {
 func NewGrid() *Grid {
 	g := Grid{}
 
-	for row := 0; row < 9; row++ {
-		for column := 0; column < 9; column++ {
-			g.cells[row][column] = NewCell()
+	for row := 1; row <= 9; row++ {
+		for column := 1; column <= 9; column++ {
+			cell, err := NewCell(row, column)
+
+			if err != nil {
+				panic("failed to create cell")
+			}
+
+			g.cells[row-1][column-1] = cell
 		}
 	}
 

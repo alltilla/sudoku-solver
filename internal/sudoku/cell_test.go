@@ -8,6 +8,9 @@ import (
 	. "github.com/alltilla/sudoku-solver/internal/test_utils"
 )
 
+const TEST_ROW int = 1
+const TEST_COLUMN int = 1
+
 func AssertValue(t *testing.T, actual int, expected int) {
 	if expected != actual {
 		t.Errorf("unexpected value. expected: %d, actual: %d", expected, actual)
@@ -21,15 +24,16 @@ func assertPencilMarks(t *testing.T, actual []int, expected []int) {
 }
 
 func TestGetValueDefault(t *testing.T) {
-	cell := NewCell()
+	cell, err := NewCell(TEST_ROW, TEST_COLUMN)
 
+	AssertNoError(t, err)
 	AssertValue(t, cell.GetValue(), Empty)
 }
 
 func TestSetValue(t *testing.T) {
 	for value_to_set := 1; value_to_set <= 9; value_to_set++ {
 		t.Run(strconv.Itoa(value_to_set), func(t *testing.T) {
-			cell := NewCell()
+			cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 
 			AssertNoError(t, cell.SetValue(value_to_set))
 			AssertValue(t, cell.GetValue(), value_to_set)
@@ -38,7 +42,8 @@ func TestSetValue(t *testing.T) {
 }
 
 func TestSetValueEmpty(t *testing.T) {
-	cell := NewCell()
+	cell, err := NewCell(TEST_ROW, TEST_COLUMN)
+	AssertNoError(t, err)
 
 	AssertNoError(t, cell.SetValue(1))
 	AssertNoError(t, cell.SetValue(Empty))
@@ -46,7 +51,8 @@ func TestSetValueEmpty(t *testing.T) {
 }
 
 func TestSetValueIdempotency(t *testing.T) {
-	cell := NewCell()
+	cell, err := NewCell(TEST_ROW, TEST_COLUMN)
+	AssertNoError(t, err)
 
 	AssertNoError(t, cell.SetValue(1))
 	AssertNoError(t, cell.SetValue(1))
@@ -57,7 +63,7 @@ func TestSetValueInvalid(t *testing.T) {
 	values_to_set := []int{0, 10}
 	for _, value_to_set := range values_to_set {
 		t.Run(strconv.Itoa(value_to_set), func(t *testing.T) {
-			cell := NewCell()
+			cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 
 			AssertError(t, cell.SetValue(value_to_set))
 			AssertValue(t, cell.GetValue(), Empty)
@@ -66,7 +72,7 @@ func TestSetValueInvalid(t *testing.T) {
 }
 
 func TestGetPencilMarksDefault(t *testing.T) {
-	cell := NewCell()
+	cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 
 	assertPencilMarks(t, cell.GetPencilMarks(), []int{1, 2, 3, 4, 5, 6, 7, 8, 9})
 }
@@ -78,7 +84,7 @@ func emptyPencilMarks(cell *Cell) {
 }
 
 func TestAddPencilMark(t *testing.T) {
-	cell := NewCell()
+	cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 	emptyPencilMarks(cell)
 
 	expected_pencil_marks := []int{}
@@ -92,7 +98,7 @@ func TestAddPencilMark(t *testing.T) {
 }
 
 func TestAddPencilMarkIdempotency(t *testing.T) {
-	cell := NewCell()
+	cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 	emptyPencilMarks(cell)
 
 	AssertNoError(t, cell.AddPencilMark(1))
@@ -105,7 +111,7 @@ func TestAddPencilMarkInvalid(t *testing.T) {
 
 	for _, pencil_mark_to_add := range pencil_marks_to_add {
 		t.Run(strconv.Itoa(pencil_mark_to_add), func(t *testing.T) {
-			cell := NewCell()
+			cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 			emptyPencilMarks(cell)
 
 			AssertError(t, cell.AddPencilMark(pencil_mark_to_add))
@@ -115,7 +121,7 @@ func TestAddPencilMarkInvalid(t *testing.T) {
 }
 
 func TestRemovePencilMark(t *testing.T) {
-	cell := NewCell()
+	cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 
 	expected_pencil_marks := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
@@ -128,7 +134,7 @@ func TestRemovePencilMark(t *testing.T) {
 }
 
 func TestRemovePencilMarkIdempotency(t *testing.T) {
-	cell := NewCell()
+	cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 
 	expected_pencil_marks := []int{2, 3, 4, 5, 6, 7, 8, 9}
 
@@ -142,7 +148,7 @@ func TestRemovePencilMarkInvalid(t *testing.T) {
 
 	for _, pencil_mark_to_remove := range pencil_marks_to_remove {
 		t.Run(strconv.Itoa(pencil_mark_to_remove), func(t *testing.T) {
-			cell := NewCell()
+			cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 
 			expected_pencil_marks := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
@@ -153,7 +159,7 @@ func TestRemovePencilMarkInvalid(t *testing.T) {
 }
 
 func TestAddPencilMarks(t *testing.T) {
-	cell := NewCell()
+	cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 	emptyPencilMarks(cell)
 
 	pencil_marks_to_add := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
@@ -163,7 +169,7 @@ func TestAddPencilMarks(t *testing.T) {
 }
 
 func TestAddPencilMarksIdempotency(t *testing.T) {
-	cell := NewCell()
+	cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 	emptyPencilMarks(cell)
 
 	pencil_marks_to_add := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
@@ -181,7 +187,7 @@ func TestAddPencilMarksInvalid(t *testing.T) {
 
 	for _, pencil_marks_to_add := range pencil_mark_arrays_to_add {
 		t.Run(strconv.Itoa(pencil_marks_to_add[1]), func(t *testing.T) {
-			cell := NewCell()
+			cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 			emptyPencilMarks(cell)
 
 			AssertError(t, cell.AddPencilMarks(pencil_marks_to_add))
@@ -191,7 +197,7 @@ func TestAddPencilMarksInvalid(t *testing.T) {
 }
 
 func TestRemovePencilMarks(t *testing.T) {
-	cell := NewCell()
+	cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 
 	pencil_marks_to_remove := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
@@ -200,7 +206,7 @@ func TestRemovePencilMarks(t *testing.T) {
 }
 
 func TestRemovePencilMarksIdempotency(t *testing.T) {
-	cell := NewCell()
+	cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 
 	pencil_marks_to_remove := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
@@ -217,7 +223,7 @@ func TestRemovePencilMarksInvalid(t *testing.T) {
 
 	for _, pencil_marks_to_remove := range pencil_mark_arrays_to_remove {
 		t.Run(strconv.Itoa(pencil_marks_to_remove[1]), func(t *testing.T) {
-			cell := NewCell()
+			cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
 
 			expected_pencil_marks := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 

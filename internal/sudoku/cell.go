@@ -5,6 +5,8 @@ import "fmt"
 const Empty int = -127
 
 type Cell struct {
+	row          int
+	column       int
 	value        int
 	pencil_marks [9]bool
 }
@@ -26,16 +28,23 @@ func CheckRowAndColumnValidity(row int, column int) error {
 	return nil
 }
 
-func NewCell() *Cell {
+func NewCell(row int, column int) (*Cell, error) {
+	err := CheckRowAndColumnValidity(row, column)
+	if err != nil {
+		return nil, err
+	}
+
 	value := Empty
 	pencil_marks := [9]bool{true, true, true, true, true, true, true, true, true}
 
 	c := Cell{
+		row,
+		column,
 		value,
 		pencil_marks,
 	}
 
-	return &c
+	return &c, nil
 }
 
 func checkDigitValidity(digit int) error {
