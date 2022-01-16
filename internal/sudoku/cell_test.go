@@ -393,3 +393,47 @@ func TestLoadValueFromStringInvalid(t *testing.T) {
 		})
 	}
 }
+
+func TestLoadPencilMarksFromString(t *testing.T) {
+	test_cases := []struct {
+		input_str             string
+		expected_pencil_marks []int
+	}{
+		{"123456789", []int{1, 2, 3, 4, 5, 6, 7, 8, 9}},
+		{"  1 23456 78 9   ", []int{1, 2, 3, 4, 5, 6, 7, 8, 9}},
+		{"1..9", []int{1, 2, 3, 4, 5, 6, 7, 8, 9}},
+		{" 1 . . 9 ", []int{1, 2, 3, 4, 5, 6, 7, 8, 9}},
+		{"1..3 6..9", []int{1, 2, 3, 6, 7, 8, 9}},
+	}
+
+	for _, pencil_marks_to_load := range test_cases {
+		t.Run(pencil_marks_to_load.input_str, func(t *testing.T) {
+			cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
+
+			AssertNoError(t, cell.LoadPencilMarksFromString(pencil_marks_to_load.input_str))
+			assertPencilMarks(t, cell.GetPencilMarks(), pencil_marks_to_load.expected_pencil_marks)
+		})
+	}
+}
+
+func TestLoadPencilMarksFromStringInvalid(t *testing.T) {
+	input_strings := []string{
+		"x12345",
+		"132456789",
+		"1.2 3456",
+		"..234",
+		"1..3 ..7",
+		"1...89",
+		"1..5 7..",
+		"1..5 7.",
+	}
+
+	for _, input_string := range input_strings {
+		t.Run(input_string, func(t *testing.T) {
+			cell, _ := NewCell(TEST_ROW, TEST_COLUMN)
+
+			AssertError(t, cell.LoadPencilMarksFromString(input_string))
+			assertPencilMarks(t, cell.GetPencilMarks(), []int{1, 2, 3, 4, 5, 6, 7, 8, 9})
+		})
+	}
+}
