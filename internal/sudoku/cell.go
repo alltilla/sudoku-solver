@@ -1,6 +1,9 @@
 package sudoku
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 const Empty int = -127
 
@@ -55,6 +58,13 @@ func NewCell(row int, column int) (*Cell, error) {
 	}
 
 	return &c, nil
+}
+
+func (c *Cell) Equals(other *Cell) bool {
+	return c.row == other.row &&
+		c.column == other.column &&
+		c.value == other.value &&
+		reflect.DeepEqual(c.pencil_marks, other.pencil_marks)
 }
 
 func checkDigitValidity(digit int) error {

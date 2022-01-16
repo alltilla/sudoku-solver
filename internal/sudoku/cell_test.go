@@ -18,6 +18,18 @@ func AssertValue(t *testing.T, actual int, expected int) {
 	}
 }
 
+func AssertCellEquals(t *testing.T, actual *Cell, expected *Cell) {
+	if !actual.Equals(expected) {
+		t.Errorf("cells do not match.")
+	}
+}
+
+func AssertCellNotEquals(t *testing.T, actual *Cell, expected *Cell) {
+	if actual.Equals(expected) {
+		t.Errorf("cells should not match.")
+	}
+}
+
 func assertPencilMarks(t *testing.T, actual []int, expected []int) {
 	if !reflect.DeepEqual(expected, actual) {
 		t.Errorf("unexpected pencil_marks. expected: %v, actual: %v", expected, actual)
@@ -29,6 +41,27 @@ func TestGetValueDefault(t *testing.T) {
 
 	AssertNoError(t, err)
 	AssertValue(t, cell.GetValue(), Empty)
+}
+
+func TestEquals(t *testing.T) {
+	cell_1, _ := NewCell(TEST_ROW, TEST_COLUMN)
+	cell_2, _ := NewCell(TEST_ROW, TEST_COLUMN)
+	cell_3, _ := NewCell(TEST_ROW+1, TEST_COLUMN+1)
+
+	AssertCellEquals(t, cell_1, cell_2)
+	AssertCellNotEquals(t, cell_1, cell_3)
+
+	cell_1.RemovePencilMark(5)
+	AssertCellNotEquals(t, cell_1, cell_2)
+
+	cell_2.RemovePencilMark(5)
+	AssertCellEquals(t, cell_1, cell_2)
+
+	cell_1.SetValue(8)
+	AssertCellNotEquals(t, cell_1, cell_2)
+
+	cell_2.SetValue(8)
+	AssertCellEquals(t, cell_1, cell_2)
 }
 
 func TestNewCellValidRowAndColumn(t *testing.T) {
