@@ -7,7 +7,8 @@ import (
 )
 
 type Grid struct {
-	cells [9][9]*Cell
+	cells        [9][9]*Cell
+	cells_by_box [9][]*Cell
 }
 
 func NewGrid() *Grid {
@@ -22,6 +23,9 @@ func NewGrid() *Grid {
 			}
 
 			g.cells[row-1][column-1] = cell
+
+			box_id := cell.GetBoxId()
+			g.cells_by_box[box_id-1] = append(g.cells_by_box[box_id-1], cell)
 		}
 	}
 
@@ -62,6 +66,19 @@ func (g *Grid) GetCellsInColumn(column int) ([9]*Cell, error) {
 
 		cells[row-1] = cell
 	}
+
+	return cells, nil
+}
+
+func (g *Grid) GetCellsInBox(box int) ([9]*Cell, error) {
+	cells := [9]*Cell{nil, nil, nil, nil, nil, nil, nil, nil, nil}
+
+	err := CheckBoxValidity(box)
+	if err != nil {
+		return cells, err
+	}
+
+	copy(cells[:], g.cells_by_box[box-1])
 
 	return cells, nil
 }

@@ -28,6 +28,16 @@ func CheckRowAndColumnValidity(row int, column int) error {
 	return nil
 }
 
+func CheckBoxValidity(box int) error {
+	if box > 9 {
+		return fmt.Errorf("box is larger than 9: %d", box)
+	}
+	if box < 1 {
+		return fmt.Errorf("box is smaller than 1: %d", box)
+	}
+	return nil
+}
+
 func NewCell(row int, column int) (*Cell, error) {
 	err := CheckRowAndColumnValidity(row, column)
 	if err != nil {

@@ -169,3 +169,45 @@ func TestGetColumnInvalid(t *testing.T) {
 		})
 	}
 }
+
+func TestGetCellsInBox(t *testing.T) {
+	grid_string := `   26 7 1
+68  7  9 
+19   45  
+82 1   4 
+  46 29  
+ 5   3 28
+  93   74
+ 4  5  36
+7 3 18   
+`
+
+	grid := NewGrid()
+	grid.LoadValuesFromString(grid_string)
+
+	cells, err := grid.GetCellsInBox(5)
+	AssertNoError(t, err)
+
+	expected_values := [9]int{1, Empty, Empty, 6, Empty, 2, Empty, Empty, 3}
+	for i, cell := range cells {
+		AssertValue(t, cell.GetValue(), expected_values[i])
+	}
+}
+
+func TestGetBoxInvalid(t *testing.T) {
+	boxes_to_get := []int{0, 10}
+	for _, box_to_get := range boxes_to_get {
+		t.Run(strconv.Itoa(box_to_get), func(t *testing.T) {
+			grid := NewGrid()
+
+			box, err := grid.GetCellsInBox(box_to_get)
+			AssertError(t, err)
+
+			for _, cell := range box {
+				if cell != nil {
+					t.Errorf("unexpected box: %v", box)
+				}
+			}
+		})
+	}
+}
