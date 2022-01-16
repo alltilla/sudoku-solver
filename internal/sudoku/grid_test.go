@@ -99,14 +99,13 @@ func TestGetCellsInRow(t *testing.T) {
 `
 
 	grid := NewGrid()
-	err := grid.LoadValuesFromString(grid_string)
-	AssertNoError(t, err)
+	grid.LoadValuesFromString(grid_string)
 
-	row, err := grid.GetCellsInRow(5)
+	cells, err := grid.GetCellsInRow(5)
 	AssertNoError(t, err)
 
 	expected_values := [9]int{Empty, Empty, 4, 6, Empty, 2, 9, Empty, Empty}
-	for i, cell := range row {
+	for i, cell := range cells {
 		AssertValue(t, cell.GetValue(), expected_values[i])
 	}
 }
@@ -117,12 +116,12 @@ func TestGetCellsInRowInvalid(t *testing.T) {
 		t.Run(strconv.Itoa(row_to_get), func(t *testing.T) {
 			grid := NewGrid()
 
-			row, err := grid.GetCellsInRow(row_to_get)
+			cells, err := grid.GetCellsInRow(row_to_get)
 			AssertError(t, err)
 
-			for _, cell := range row {
+			for _, cell := range cells {
 				if cell != nil {
-					t.Errorf("unexpected row: %v", row)
+					t.Errorf("unexpected cells: %v", cells)
 				}
 			}
 		})
@@ -142,14 +141,13 @@ func TestGetCellsInColumn(t *testing.T) {
 `
 
 	grid := NewGrid()
-	err := grid.LoadValuesFromString(grid_string)
-	AssertNoError(t, err)
+	grid.LoadValuesFromString(grid_string)
 
-	column, err := grid.GetCellsInColumn(5)
+	cells, err := grid.GetCellsInColumn(5)
 	AssertNoError(t, err)
 
 	expected_values := [9]int{6, 7, Empty, Empty, Empty, Empty, Empty, 5, 1}
-	for i, cell := range column {
+	for i, cell := range cells {
 		AssertValue(t, cell.GetValue(), expected_values[i])
 	}
 }
@@ -160,12 +158,12 @@ func TestGetColumnInvalid(t *testing.T) {
 		t.Run(strconv.Itoa(column_to_get), func(t *testing.T) {
 			grid := NewGrid()
 
-			column, err := grid.GetCellsInColumn(column_to_get)
+			cells, err := grid.GetCellsInColumn(column_to_get)
 			AssertError(t, err)
 
-			for _, cell := range column {
+			for _, cell := range cells {
 				if cell != nil {
-					t.Errorf("unexpected column: %v", column)
+					t.Errorf("unexpected cells: %v", cells)
 				}
 			}
 		})

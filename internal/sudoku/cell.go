@@ -57,6 +57,14 @@ func checkDigitValidity(digit int) error {
 	return nil
 }
 
+func (c *Cell) GetRowId() int {
+	return c.row
+}
+
+func (c *Cell) GetColumnId() int {
+	return c.column
+}
+
 func (c *Cell) GetValue() int {
 	return c.value
 }

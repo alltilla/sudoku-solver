@@ -54,6 +54,32 @@ func TestNewCellInvalidRowOrColumn(t *testing.T) {
 	}
 }
 
+func TestGetRowIdAndGetColumnId(t *testing.T) {
+	for row := 1; row <= 9; row++ {
+		for column := 1; column <= 9; column++ {
+			t.Run(fmt.Sprintf("%d,%d", row, column), func(t *testing.T) {
+				cell, err := NewCell(row, column)
+
+				AssertNoError(t, err)
+				if cell == nil {
+					t.Errorf("missing cell")
+				}
+
+				actual_row_id := cell.GetRowId()
+				if actual_row_id != row {
+					t.Errorf("unexpected row ID. expected: %d, actual: %d", row, actual_row_id)
+				}
+
+				actual_column_id := cell.GetColumnId()
+				if actual_column_id != column {
+					t.Errorf("unexpected column ID. expected: %d, actual: %d", column, actual_column_id)
+				}
+
+			})
+		}
+	}
+}
+
 func TestSetValue(t *testing.T) {
 	for value_to_set := 1; value_to_set <= 9; value_to_set++ {
 		t.Run(strconv.Itoa(value_to_set), func(t *testing.T) {
