@@ -3,6 +3,7 @@ package sudoku
 import (
 	"fmt"
 	"math"
+	"strings"
 )
 
 type Grid struct {
@@ -101,6 +102,31 @@ func (g *Grid) LoadValuesFromString(str string) error {
 		}
 
 		err = cell.LoadValueFromString(cell_value_str)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (g *Grid) LoadPencilMarksFromString(str string) error {
+	pencil_marks := strings.FieldsFunc(str, func(r rune) bool { return r == '|' || r == '\n' })
+
+	if len(pencil_marks) != 81 {
+		return fmt.Errorf("unexpected amount of pencil marks: %d", len(pencil_marks))
+	}
+
+	for i := 0; i < 9*9; i++ {
+		row := int(math.Floor(float64(i)/9) + 1)
+		column := (i % 9) + 1
+
+		cell, err := g.GetCell(row, column)
+		if err != nil {
+			panic("failed to get cell")
+		}
+
+		err = cell.LoadPencilMarksFromString(pencil_marks[i])
 		if err != nil {
 			return err
 		}
