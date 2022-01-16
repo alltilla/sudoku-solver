@@ -31,6 +31,21 @@ func TestGetValueDefault(t *testing.T) {
 	AssertValue(t, cell.GetValue(), Empty)
 }
 
+func TestNewCellValidRowAndColumn(t *testing.T) {
+	for row := 1; row <= 9; row++ {
+		for column := 1; column <= 9; column++ {
+			t.Run(fmt.Sprintf("%d,%d", row, column), func(t *testing.T) {
+				cell, err := NewCell(row, column)
+
+				AssertNoError(t, err)
+				if cell == nil {
+					t.Errorf("missing cell")
+				}
+			})
+		}
+	}
+}
+
 func TestNewCellInvalidRowOrColumn(t *testing.T) {
 	invalid_row_and_column_ids := [][2]int{
 		{0, 1},
@@ -58,12 +73,7 @@ func TestGetRowIdAndGetColumnId(t *testing.T) {
 	for row := 1; row <= 9; row++ {
 		for column := 1; column <= 9; column++ {
 			t.Run(fmt.Sprintf("%d,%d", row, column), func(t *testing.T) {
-				cell, err := NewCell(row, column)
-
-				AssertNoError(t, err)
-				if cell == nil {
-					t.Errorf("missing cell")
-				}
+				cell, _ := NewCell(row, column)
 
 				actual_row_id := cell.GetRowId()
 				if actual_row_id != row {
@@ -74,7 +84,6 @@ func TestGetRowIdAndGetColumnId(t *testing.T) {
 				if actual_column_id != column {
 					t.Errorf("unexpected column ID. expected: %d, actual: %d", column, actual_column_id)
 				}
-
 			})
 		}
 	}
@@ -97,12 +106,7 @@ func TestGetBoxId(t *testing.T) {
 	for row := 1; row <= 9; row++ {
 		for column := 1; column <= 9; column++ {
 			t.Run(fmt.Sprintf("%d,%d", row, column), func(t *testing.T) {
-				cell, err := NewCell(row, column)
-
-				AssertNoError(t, err)
-				if cell == nil {
-					t.Errorf("missing cell")
-				}
+				cell, _ := NewCell(row, column)
 
 				expected_box_id := expected_box_ids[i]
 
