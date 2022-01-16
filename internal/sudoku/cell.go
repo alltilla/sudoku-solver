@@ -69,6 +69,34 @@ func (c *Cell) GetValue() int {
 	return c.value
 }
 
+func (c *Cell) GetBoxId() int {
+	if c.GetRowId() <= 3 {
+		if c.GetColumnId() <= 3 {
+			return 1
+		} else if c.GetColumnId() <= 6 {
+			return 2
+		} else {
+			return 3
+		}
+	} else if c.GetRowId() <= 6 {
+		if c.GetColumnId() <= 3 {
+			return 4
+		} else if c.GetColumnId() <= 6 {
+			return 5
+		} else {
+			return 6
+		}
+	} else {
+		if c.GetColumnId() <= 3 {
+			return 7
+		} else if c.GetColumnId() <= 6 {
+			return 8
+		} else {
+			return 9
+		}
+	}
+}
+
 func (c *Cell) SetValue(value int) error {
 	if value != Empty {
 		err := checkDigitValidity(value)

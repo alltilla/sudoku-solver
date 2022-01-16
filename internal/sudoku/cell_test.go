@@ -80,6 +80,43 @@ func TestGetRowIdAndGetColumnId(t *testing.T) {
 	}
 }
 
+func TestGetBoxId(t *testing.T) {
+	expected_box_ids := []int{
+		1, 1, 1, 2, 2, 2, 3, 3, 3,
+		1, 1, 1, 2, 2, 2, 3, 3, 3,
+		1, 1, 1, 2, 2, 2, 3, 3, 3,
+		4, 4, 4, 5, 5, 5, 6, 6, 6,
+		4, 4, 4, 5, 5, 5, 6, 6, 6,
+		4, 4, 4, 5, 5, 5, 6, 6, 6,
+		7, 7, 7, 8, 8, 8, 9, 9, 9,
+		7, 7, 7, 8, 8, 8, 9, 9, 9,
+		7, 7, 7, 8, 8, 8, 9, 9, 9,
+	}
+
+	i := 0
+	for row := 1; row <= 9; row++ {
+		for column := 1; column <= 9; column++ {
+			t.Run(fmt.Sprintf("%d,%d", row, column), func(t *testing.T) {
+				cell, err := NewCell(row, column)
+
+				AssertNoError(t, err)
+				if cell == nil {
+					t.Errorf("missing cell")
+				}
+
+				expected_box_id := expected_box_ids[i]
+
+				actual_box_id := cell.GetBoxId()
+				if actual_box_id != expected_box_id {
+					t.Errorf("unexpected Nox ID. expected: %d, actual: %d", expected_box_id, actual_box_id)
+				}
+			})
+
+			i++
+		}
+	}
+}
+
 func TestSetValue(t *testing.T) {
 	for value_to_set := 1; value_to_set <= 9; value_to_set++ {
 		t.Run(strconv.Itoa(value_to_set), func(t *testing.T) {
