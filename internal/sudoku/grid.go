@@ -153,3 +153,25 @@ func (g *Grid) LoadPencilMarksFromString(str string) error {
 
 	return nil
 }
+
+func (g *Grid) Equals(other *Grid) bool {
+	for row := 1; row <= 9; row++ {
+		for column := 1; column <= 9; column++ {
+			cell, err := g.GetCell(row, column)
+			if err != nil {
+				panic("failed to get cell")
+			}
+
+			other_cell, err := other.GetCell(row, column)
+			if err != nil {
+				panic("failed to get cell")
+			}
+
+			if !cell.Equals(other_cell) {
+				return false
+			}
+		}
+	}
+
+	return true
+}

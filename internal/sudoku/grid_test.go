@@ -302,3 +302,33 @@ func TestGetAllCells(t *testing.T) {
 		}
 	}
 }
+
+func TestGridEquals(t *testing.T) {
+	grid_string := `   26 7 1
+68  7  9 
+19   45  
+82 1   4 
+  46 29  
+ 5   3 28
+  93   74
+ 4  5  36
+7 3 18   
+`
+
+	grid_1 := NewGrid()
+	grid_1.LoadValuesFromString(grid_string)
+
+	grid_2 := NewGrid()
+	grid_2.LoadValuesFromString(grid_string)
+
+	if !grid_1.Equals(grid_2) {
+		t.Errorf("the two grids should be equal")
+	}
+
+	cell, _ := grid_2.GetCell(9, 9)
+	cell.SetValue(9)
+
+	if grid_1.Equals(grid_2) {
+		t.Errorf("the two grids should not be equal")
+	}
+}
