@@ -161,6 +161,7 @@ func TestSetValue(t *testing.T) {
 
 			AssertNoError(t, cell.SetValue(value_to_set))
 			AssertValue(t, cell.GetValue(), value_to_set)
+			assertPencilMarks(t, cell.GetPencilMarks(), []int{})
 		})
 	}
 }
@@ -172,6 +173,7 @@ func TestSetValueEmpty(t *testing.T) {
 	AssertNoError(t, cell.SetValue(1))
 	AssertNoError(t, cell.SetValue(Empty))
 	AssertValue(t, cell.GetValue(), Empty)
+	assertPencilMarks(t, cell.GetPencilMarks(), []int{1, 2, 3, 4, 5, 6, 7, 8, 9})
 }
 
 func TestSetValueIdempotency(t *testing.T) {

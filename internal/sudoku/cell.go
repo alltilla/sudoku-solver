@@ -119,14 +119,21 @@ func (c *Cell) GetBoxId() int {
 }
 
 func (c *Cell) SetValue(value int) error {
-	if value != Empty {
-		err := checkDigitValidity(value)
-		if err != nil {
-			return err
-		}
+	if value == Empty {
+		c.AddPencilMarks([]int{1, 2, 3, 4, 5, 6, 7, 8, 9})
+		c.value = value
+
+		return nil
+	}
+
+	err := checkDigitValidity(value)
+	if err != nil {
+		return err
 	}
 
 	c.value = value
+	c.RemovePencilMarks([]int{1, 2, 3, 4, 5, 6, 7, 8, 9})
+
 	return nil
 }
 
