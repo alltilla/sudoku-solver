@@ -83,6 +83,25 @@ func (g *Grid) GetCellsInBox(box int) ([9]*Cell, error) {
 	return cells, nil
 }
 
+func (g *Grid) GetAllCells() [81]*Cell {
+	var cells [81]*Cell
+
+	i := 0
+	for row := 1; row <= 9; row++ {
+		for column := 1; column <= 9; column++ {
+			cell, err := g.GetCell(row, column)
+			if err != nil {
+				panic("failed to get cell")
+			}
+
+			cells[i] = cell
+			i++
+		}
+	}
+
+	return cells
+}
+
 func (g *Grid) LoadValuesFromString(str string) error {
 	for i := 0; i < 9*(9+1); i++ {
 		row := int(math.Floor(float64(i)/10) + 1)

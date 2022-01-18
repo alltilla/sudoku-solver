@@ -248,3 +248,57 @@ func TestGetBoxInvalid(t *testing.T) {
 		})
 	}
 }
+
+func createCell(row int, column int, value int) *Cell {
+	cell, err := NewCell(row, column)
+	if err != nil {
+		panic("failed to create cell")
+	}
+
+	err = cell.SetValue(value)
+	if err != nil {
+		panic("failed to set value")
+	}
+
+	return cell
+}
+
+func TestGetAllCells(t *testing.T) {
+	grid_string := `   26 7 1
+68  7  9 
+19   45  
+82 1   4 
+  46 29  
+ 5   3 28
+  93   74
+ 4  5  36
+7 3 18   
+`
+
+	grid := NewGrid()
+	grid.LoadValuesFromString(grid_string)
+
+	expected_cells := [81]*Cell{
+		createCell(1, 1, Empty), createCell(1, 2, Empty), createCell(1, 3, Empty), createCell(1, 4, 2), createCell(1, 5, 6), createCell(1, 6, Empty), createCell(1, 7, 7), createCell(1, 8, Empty), createCell(1, 9, 1),
+		createCell(2, 1, 6), createCell(2, 2, 8), createCell(2, 3, Empty), createCell(2, 4, Empty), createCell(2, 5, 7), createCell(2, 6, Empty), createCell(2, 7, Empty), createCell(2, 8, 9), createCell(2, 9, Empty),
+		createCell(3, 1, 1), createCell(3, 2, 9), createCell(3, 3, Empty), createCell(3, 4, Empty), createCell(3, 5, Empty), createCell(3, 6, 4), createCell(3, 7, 5), createCell(3, 8, Empty), createCell(3, 9, Empty),
+		createCell(4, 1, 8), createCell(4, 2, 2), createCell(4, 3, Empty), createCell(4, 4, 1), createCell(4, 5, Empty), createCell(4, 6, Empty), createCell(4, 7, Empty), createCell(4, 8, 4), createCell(4, 9, Empty),
+		createCell(5, 1, Empty), createCell(5, 2, Empty), createCell(5, 3, 4), createCell(5, 4, 6), createCell(5, 5, Empty), createCell(5, 6, 2), createCell(5, 7, 9), createCell(5, 8, Empty), createCell(5, 9, Empty),
+		createCell(6, 1, Empty), createCell(6, 2, 5), createCell(6, 3, Empty), createCell(6, 4, Empty), createCell(6, 5, Empty), createCell(6, 6, 3), createCell(6, 7, Empty), createCell(6, 8, 2), createCell(6, 9, 8),
+		createCell(7, 1, Empty), createCell(7, 2, Empty), createCell(7, 3, 9), createCell(7, 4, 3), createCell(7, 5, Empty), createCell(7, 6, Empty), createCell(7, 7, Empty), createCell(7, 8, 7), createCell(7, 9, 4),
+		createCell(8, 1, Empty), createCell(8, 2, 4), createCell(8, 3, Empty), createCell(8, 4, Empty), createCell(8, 5, 5), createCell(8, 6, Empty), createCell(8, 7, Empty), createCell(8, 8, 3), createCell(8, 9, 6),
+		createCell(9, 1, 7), createCell(9, 2, Empty), createCell(9, 3, 3), createCell(9, 4, Empty), createCell(9, 5, 1), createCell(9, 6, 8), createCell(9, 7, Empty), createCell(9, 8, Empty), createCell(9, 9, Empty),
+	}
+
+	cells := grid.GetAllCells()
+
+	for i, cell := range cells {
+		expected_cell := expected_cells[i]
+		if !cell.Equals(expected_cell) {
+			t.Errorf("unexpected cell. expected: (row: %d, column: %d, value: %d), actual: (row: %d, column: %d, value: %d)",
+				expected_cell.GetRowId(), expected_cell.GetColumnId(), expected_cell.GetValue(),
+				cell.GetRowId(), cell.GetColumnId(), cell.GetValue(),
+			)
+		}
+	}
+}
