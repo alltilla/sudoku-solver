@@ -3,7 +3,6 @@ package sudoku
 import (
 	"fmt"
 	"reflect"
-	"strconv"
 )
 
 const Empty int = -127
@@ -188,103 +187,4 @@ func (c *Cell) AddPencilMarks(pencil_marks []int) error {
 
 func (c *Cell) RemovePencilMarks(pencil_marks []int) error {
 	return c.changePencilMarks(pencil_marks, false)
-}
-
-func parseValueFromChar(char byte) (int, error) {
-	if char == ' ' {
-		return Empty, nil
-	} else {
-		return strconv.Atoi(string(char))
-	}
-}
-
-func (c *Cell) LoadValueFromString(str string) error {
-	if len(str) != 1 {
-		return fmt.Errorf("str with invalid length.: %s", str)
-	}
-
-	value, err := parseValueFromChar(str[0])
-	if err != nil {
-		return err
-	}
-
-	err = c.SetValue(value)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (c *Cell) LoadPencilMarksFromString(str string) error {
-	pencil_marks_to_add := []int{}
-
-	number_of_dots := 0
-	range_start := -1
-	last_number := 0
-
-	for char_index := 0; char_index < len(str); char_index++ {
-		char := str[char_index]
-
-		if char == ' ' {
-			continue
-		}
-
-		if char == '.' {
-			if range_start == -1 {
-				return fmt.Errorf(".. is used without a starting number")
-			}
-
-			number_of_dots++
-			if number_of_dots > 2 {
-				return fmt.Errorf("too many . is used")
-			}
-			continue
-		}
-
-		number, err := strconv.Atoi(string(char))
-		if err != nil {
-			return err
-		}
-
-		if number <= last_number {
-			return fmt.Errorf("number must be given with strictly monotonic ascending order")
-		}
-		last_number = number
-
-		if number_of_dots == 1 {
-			return fmt.Errorf("only 1 . is used")
-		}
-
-		if number_of_dots == 0 {
-			pencil_marks_to_add = append(pencil_marks_to_add, number)
-			range_start = number
-			continue
-		}
-
-		if number_of_dots == 2 {
-			for pencil_mark_to_add := range_start + 1; pencil_mark_to_add <= number; pencil_mark_to_add++ {
-				pencil_marks_to_add = append(pencil_marks_to_add, pencil_mark_to_add)
-			}
-			number_of_dots = 0
-			range_start = -1
-			continue
-		}
-	}
-
-	if number_of_dots != 0 {
-		return fmt.Errorf(".. is used without range end")
-	}
-
-	err := c.RemovePencilMarks([]int{1, 2, 3, 4, 5, 6, 7, 8, 9})
-	if err != nil {
-		panic("failed to remove pencil marks")
-	}
-
-	err = c.AddPencilMarks(pencil_marks_to_add)
-	if err != nil {
-		panic("failed to add pencil marks")
-	}
-
-	return nil
 }

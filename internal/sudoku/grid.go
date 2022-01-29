@@ -1,8 +1,6 @@
 package sudoku
 
 import (
-	"fmt"
-	"math"
 	"strings"
 )
 
@@ -102,69 +100,17 @@ func (g *Grid) GetAllCells() [81]*Cell {
 	return cells
 }
 
-func (g *Grid) LoadValuesFromString(str string) error {
-	for i := 0; i < 9*(9+1); i++ {
-		row := int(math.Floor(float64(i)/10) + 1)
-		column := (i % 10) + 1
-		cell_value_str := string(str[i])
-
-		if column == 10 {
-			if cell_value_str != "\n" {
-				return fmt.Errorf("missing NL at position %d", i)
-			}
-			continue
-		}
-
-		cell, err := g.GetCell(row, column)
-		if err != nil {
-			return err
-		}
-
-		err = cell.LoadValueFromString(cell_value_str)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (g *Grid) LoadPencilMarksFromString(str string) error {
-	pencil_marks := strings.FieldsFunc(str, func(r rune) bool { return r == '|' || r == '\n' })
-
-	if len(pencil_marks) != 81 {
-		return fmt.Errorf("unexpected amount of pencil marks: %d", len(pencil_marks))
-	}
-
-	for i := 0; i < 9*9; i++ {
-		row := int(math.Floor(float64(i)/9) + 1)
-		column := (i % 9) + 1
-
-		cell, err := g.GetCell(row, column)
-		if err != nil {
-			panic("failed to get cell")
-		}
-
-		err = cell.LoadPencilMarksFromString(pencil_marks[i])
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (g *Grid) Equals(other *Grid) bool {
 	for row := 1; row <= 9; row++ {
 		for column := 1; column <= 9; column++ {
 			cell, err := g.GetCell(row, column)
 			if err != nil {
-				panic("failed to get cell")
+				panic(err.Error())
 			}
 
 			other_cell, err := other.GetCell(row, column)
 			if err != nil {
-				panic("failed to get cell")
+				panic(err.Error())
 			}
 
 			if !cell.Equals(other_cell) {
@@ -174,4 +120,32 @@ func (g *Grid) Equals(other *Grid) bool {
 	}
 
 	return true
+}
+
+func (g *Grid) makeFullyEmpty() {
+	for _, cell := range g.GetAllCells() {
+		if err := cell.SetValue(Empty); err != nil {
+			panic(err.Error())
+		}
+
+		if err := cell.RemovePencilMarks([]int{1, 2, 3, 4, 5, 6, 7, 8, 9}); err != nil {
+			panic(err.Error())
+		}
+	}
+}
+
+func (g *Grid) LoadPrettyString(pretty_string string) error {
+	pretty_string_trimmed := strings.TrimSpace(pretty_string)
+
+	if err := validateFrame(pretty_string_trimmed); err != nil {
+		return err
+	}
+
+	g.makeFullyEmpty()
+
+	if err := g.deserializeGridPrettyString(pretty_string_trimmed); err != nil {
+		return err
+	}
+
+	return nil
 }
