@@ -16,14 +16,13 @@ func pencilMarksContainDigit(pencil_marks []int, digit int) bool {
 	return false
 }
 
-func findHiddenSingleInArrayOfCells(cells [9]*sudoku.Cell) (bool, error) {
-
+func findHiddenSingleInSet(set *sudoku.Set) (bool, error) {
 	for digit := 1; digit <= 9; digit++ {
 		var hidden_single_cell_candidate *sudoku.Cell = nil
 		value_found := false
 		multiple_candidates := false
 
-		for _, cell := range cells {
+		for _, cell := range set.Cells {
 			if cell.GetValue() == digit {
 				value_found = true
 				break
@@ -44,7 +43,7 @@ func findHiddenSingleInArrayOfCells(cells [9]*sudoku.Cell) (bool, error) {
 		}
 
 		if hidden_single_cell_candidate == nil {
-			return false, fmt.Errorf("no possible cell to place digit: %d", digit)
+			return false, fmt.Errorf("error in %s %d: no possible cell to place digit: %d", set.Orientation, set.Index, digit)
 		}
 
 		if err := hidden_single_cell_candidate.SetValue(digit); err != nil {
@@ -56,74 +55,12 @@ func findHiddenSingleInArrayOfCells(cells [9]*sudoku.Cell) (bool, error) {
 	return false, nil
 }
 
-func findHiddenSingleInRows(grid *sudoku.Grid) (bool, error) {
-	for row := 1; row <= 9; row++ {
-		cells_in_row, err := grid.GetCellsInRow(row)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		if changed, err := findHiddenSingleInArrayOfCells(cells_in_row); err != nil {
-			return changed, fmt.Errorf("error in row %d: %w", row, err)
-		} else if changed {
-			return changed, err
-		}
-	}
-
-	return false, nil
-}
-
-func findHiddenSingleInColumns(grid *sudoku.Grid) (bool, error) {
-	for column := 1; column <= 9; column++ {
-		cells_in_column, err := grid.GetCellsInColumn(column)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		if changed, err := findHiddenSingleInArrayOfCells(cells_in_column); err != nil {
-			return changed, fmt.Errorf("error in column %d: %w", column, err)
-		} else if changed {
-			return changed, err
-		}
-	}
-
-	return false, nil
-}
-
-func findHiddenSingleInBoxes(grid *sudoku.Grid) (bool, error) {
-	for box := 1; box <= 9; box++ {
-		cells_in_box, err := grid.GetCellsInBox(box)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		if changed, err := findHiddenSingleInArrayOfCells(cells_in_box); err != nil {
-			return changed, fmt.Errorf("error in box %d: %w", box, err)
-		} else if changed {
-			return changed, err
-		}
-	}
-
-	return false, nil
-}
-
 func HiddenSingle(grid *sudoku.Grid) (bool, error) {
-	if changed, err := findHiddenSingleInRows(grid); err != nil {
-		return false, err
-	} else if changed {
-		return true, nil
-	}
-
-	if changed, err := findHiddenSingleInColumns(grid); err != nil {
-		return false, err
-	} else if changed {
-		return true, nil
-	}
-
-	if changed, err := findHiddenSingleInBoxes(grid); err != nil {
-		return false, err
-	} else if changed {
-		return true, nil
+	for _, set := range grid.GetSets() {
+		changed, err := findHiddenSingleInSet(set)
+		if err != nil || changed {
+			return changed, err
+		}
 	}
 
 	return false, nil
