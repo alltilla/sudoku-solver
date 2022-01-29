@@ -9,6 +9,12 @@ type Grid struct {
 	cells_by_box [9][]*Cell
 }
 
+type Set struct {
+	Orientation string
+	Index       int
+	Cells       [9]*Cell
+}
+
 func NewGrid() *Grid {
 	g := Grid{}
 
@@ -79,6 +85,39 @@ func (g *Grid) GetCellsInBox(box int) ([9]*Cell, error) {
 	copy(cells[:], g.cells_by_box[box-1])
 
 	return cells, nil
+}
+
+func (g *Grid) GetSets() [27]*Set {
+	var sets [27]*Set
+
+	for i := 0; i < 9; i++ {
+		row := i + 1
+		if cells_in_row, err := g.GetCellsInRow(row); err != nil {
+			panic(err.Error())
+		} else {
+			sets[i] = &Set{"row", row, cells_in_row}
+		}
+	}
+
+	for i := 0; i < 9; i++ {
+		column := i + 1
+		if cells_in_column, err := g.GetCellsInColumn(column); err != nil {
+			panic(err.Error())
+		} else {
+			sets[i+9] = &Set{"column", column, cells_in_column}
+		}
+	}
+
+	for i := 0; i < 9; i++ {
+		box := i + 1
+		if cells_in_box, err := g.GetCellsInBox(box); err != nil {
+			panic(err.Error())
+		} else {
+			sets[i+18] = &Set{"box", box, cells_in_box}
+		}
+	}
+
+	return sets
 }
 
 func (g *Grid) GetAllCells() [81]*Cell {
